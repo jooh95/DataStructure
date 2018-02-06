@@ -1,0 +1,112 @@
+#include<stdio.h>
+#include<iostream>
+#include<queue>
+#pragma warning(disable:4996)
+using namespace std;
+#define N 9
+#define MAX 9999
+
+int dik[N][N];
+int check[N];
+int path[N];
+
+queue<int> qu;
+
+int small(int a, int b) {
+	if (a <= b) {
+		return a;
+	}
+	else {
+		return b;
+	}
+}
+
+void dijkstra() {
+	int min = MAX;
+	int start = 1;
+	int tmp;
+
+	for (int i = 2; i < N; i++) {
+		qu.push(i);
+	}
+
+	for (int i = 1; i < N; i++) {
+		path[i] = dik[start][i];
+	}
+
+	while (!qu.empty()) {
+		
+
+		min = 999999;
+		int index = 0;
+		int n = qu.size();
+		for (int i = 0; i < n; i++) {
+			tmp = qu.front();
+			if (min > path[tmp]) {
+				min = path[tmp];
+				qu.pop();
+				qu.push(tmp);
+				index = tmp;
+			}
+			else {
+				qu.pop();
+				qu.push(tmp);
+			}
+		}
+
+		for (int i = 0; i < n; i++) {
+			tmp = qu.front();
+			if (tmp == index) {
+				qu.pop();
+				break;
+			}
+			else {
+				qu.pop();
+				qu.push(tmp);
+			}
+		}
+
+		for (int i = 2; i < N; i++) {
+			if (dik[index][i] != MAX && i != index) {
+				printf("i:%d\n", i);
+				printf("index:%d\n", index);
+				printf("graph:%d\n",dik[index][i]);
+				printf("path:%d\n", path[index]);
+				path[i] = small(path[i], dik[index][i] + path[index]);
+			}
+		}
+
+		
+		/*for (int i = 1; i < N; i++) {
+			printf("%d\n", path[i]);
+		}*/
+
+
+
+	}
+	for (int i = 1; i < N; i++) {
+		printf("%d\n", path[i]);
+	}
+}
+
+
+int main() {
+	int x, y, z;
+
+	for (int i = 1; i < N; i++) {
+		for (int j = 1; j < N; j++) {
+			dik[i][j] = MAX;
+		}
+		dik[i][i] = 0;
+	}
+
+	for (int i = 1; i <= 13; i++) {
+		scanf("%d %d %d", &x, &y, &z);
+		dik[x][y] = z;
+	}
+
+	dijkstra();
+
+
+	return 0;
+}
